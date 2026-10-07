@@ -1,28 +1,65 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}Home | DijiKala{% endblock %}
+
+{% block title %}خانه | دیجی‌کالا{% endblock %}
 
 {% block content %}
-<h2>🛒 Latest Products</h2>
-<div class="card-grid">
-    {% for product in products %}
-        <div class="card">
-            {% if product.image %}
-                <img src="{{ product.image.url }}" alt="{{ product.name }}">
+<div class="home-page" dir="rtl">
+    <section class="home-hero">
+        <p class="hero-eyebrow">خرید آسان، انتخاب هوشمند</p>
+        <h1>به فروشگاه دیجی‌کالا خوش آمدید</h1>
+        <p class="hero-description">محصول موردنظرتان را پیدا کنید و از فروشگاه‌های ما دیدن کنید.</p>
+
+        <form class="product-search" method="get" action="{% url 'home' %}">
+            <label class="visually-hidden" for="product-search">جست‌وجوی محصول یا فروشگاه</label>
+            <input id="product-search" type="search" name="q" value="{{ query }}"
+                   placeholder="نام محصول یا فروشگاه را جست‌وجو کنید">
+            <button type="submit">جست‌وجو</button>
+        </form>
+    </section>
+
+    <section class="products-section" aria-labelledby="products-title">
+        <div class="section-heading">
+            <div>
+                <p class="section-eyebrow">ویترین فروشگاه</p>
+                <h2 id="products-title">محصولات</h2>
+            </div>
+            {% if query %}
+                <p class="result-count">نتایج جست‌وجو برای «{{ query }}»</p>
             {% else %}
-                <img src="{% static 'images/default_product.jpg' %}" alt="No image">
-            {% endif %}
-            <h3>{{ product.name }}</h3>
-            <p>{{ product.description|truncatewords:12 }}</p>
-            <p><strong>${{ product.price }}</strong></p>
-            {% if user.is_authenticated %}
-                <a href="{% url 'add_to_cart' product.id %}" class="btn">Add to Cart</a>
-            {% else %}
-                <p><a href="{% url 'login' %}">Login to Buy</a></p>
+                <p class="result-count">تازه‌ترین محصولات ثبت‌شده</p>
             {% endif %}
         </div>
-    {% empty %}
-        <p>No products yet!</p>
-    {% endfor %}
+
+        <div class="product-grid">
+            {% for product in products %}
+                <article class="product-card">
+                    <div class="product-image-wrap">
+                        {% if product.image %}
+                            <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image">
+                        {% else %}
+                            <div class="product-image-placeholder" aria-label="تصویری برای محصول ثبت نشده است">تصویر محصول</div>
+                        {% endif %}
+                    </div>
+                    <div class="product-info">
+                        <p class="product-store">{{ product.store.name }}</p>
+                        <h3>{{ product.name }}</h3>
+                        <p class="product-price"><span>{{ product.price|floatformat:"-2" }}</span> تومان</p>
+                    </div>
+                </article>
+            {% empty %}
+                <div class="empty-products">
+                    <span class="empty-icon" aria-hidden="true">⌕</span>
+                    {% if query %}
+                        <h3>محصولی پیدا نشد</h3>
+                        <p>عبارت دیگری را جست‌وجو کنید.</p>
+                    {% else %}
+                        <h3>هنوز محصولی ثبت نشده است</h3>
+                        <p>به‌محض اضافه‌شدن محصولات، آن‌ها را همین‌جا می‌بینید.</p>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    </section>
 </div>
 {% endblock %}
