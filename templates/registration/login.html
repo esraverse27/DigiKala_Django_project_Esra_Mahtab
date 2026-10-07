@@ -7,6 +7,7 @@
 <form method="post" class="auth-form">
     {% csrf_token %}
     {{ form.non_field_errors }}
+
     <div class="form-group">
         <label for="id_username">Username</label>
         {{ form.username }}
@@ -15,6 +16,10 @@
         <label for="id_password">Password</label>
         {{ form.password }}
     </div>
+
+    {% if error %}
+        <p>{{ error }}</p>
+    {% endif %}
 
     <button type="submit" class="btn">Login</button>
 

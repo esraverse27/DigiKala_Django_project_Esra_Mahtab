@@ -14,11 +14,11 @@ def login_view(request):
 
         else:
             form = UserLoginForm()
-            return render(request, 'form.html', {'error':'username or password is incorrect', 'form':form})
+            return render(request, 'registration/login.html', {'error':'username or password is incorrect', 'form':form})
 
     else:
         form = UserLoginForm()
-        return render(request, 'form.html', {'form':form})
+        return render(request, 'registration/login.html', {'form':form})
 
 
 def signin_view(request):
@@ -29,19 +29,19 @@ def signin_view(request):
             if form.is_valid():
                 user = form.save()
                 login(request, user)
-                return render(request, 'test_home.html')
-            return render(request, 'form.html', {'form':form})
+                return render(request, 'home.html')
+            return render(request, 'registration/signup.html', {'form':form})
 
         else:
             form = UserRegisterForm()
-            return render(request, 'form.html', {'form':form})
+            return render(request, 'registration/signup.html', {'form':form})
 
     else:
         return redirect('home')
 
 def logout_view(request):
     logout(request)
-    return redirect('home')
+    return render(request, 'registration/logged_out.html')
 
 def home_view(request):
-    return render(request, 'test_home.html')
+    return render(request, 'home.html')

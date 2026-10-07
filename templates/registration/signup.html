@@ -9,17 +9,25 @@
     {{ form.non_field_errors }}
 
     <div class="form-group">
-        <label for="id_username">Username</label>
-        {{ form.username }}
+        <label>first name</label>
+        {{ form.first_name }} 
     </div>
+
     <div class="form-group">
-        <label for="id_email">Email</label>
-        {{ form.email }}
+        <label>last_name</label>
+        {{ form.last_name }} 
     </div>
+
+    <div class="form-group">
+        <label>phone</label>
+        {{ form.phone }} 
+    </div>
+
     <div class="form-group">
         <label for="id_password1">Password</label>
-        {{ form.password1 }}
+        {{ form.password1 }} 
     </div>
+
     <div class="form-group">
         <label for="id_password2">Confirm Password</label>
         {{ form.password2 }}
