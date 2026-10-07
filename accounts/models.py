@@ -6,15 +6,6 @@ class CustomUserManager(BaseUserManager):
     def create_user(self, phone, password=None, **extra_fields):
         if not phone:
             raise ValueError("Phone must be set")
-        
-        extra_fields.setdefault("is_staff", False)
-        extra_fields.setdefault("is_superuser", True)
-
-        if extra_fields.get("is_staff") is True:
-            raise ValueError("user must have is_staff=False")
-
-        if extra_fields.get("is_active") is not True:
-            raise ValueError("user must have is_active=True")
 
         user = self.model(phone=phone, **extra_fields)
         user.set_password(password)
