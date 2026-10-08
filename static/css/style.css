@@ -202,6 +202,7 @@ main.container {
 .auth-link a:hover {
     text-decoration: underline;
 }
+<<<<<<< HEAD
 
 /* ====== HOME PAGE ====== */
 .navbar-content {
@@ -459,3 +460,5 @@ main.container {
         padding: 12px;
     }
 }
+=======
+>>>>>>> accounts
