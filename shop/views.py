@@ -1,14 +1,14 @@
 from decimal import Decimal, InvalidOperation
 
 from django.contrib import messages
-from django.contrib.auth import login
+from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.db import transaction
 from django.db.models import Prefetch, Q
 from django.shortcuts import get_object_or_404, redirect, render
 
-from .forms import AdminProductForm, AdminStoreForm, ProductForm, SignupForm, StoreForm
+from .forms import AdminProductForm, AdminStoreForm, ProductForm, SignupForm, StoreForm, UserLoginForm
 from .models import (
     CartItem,
     CustomerProfile,
@@ -18,6 +18,24 @@ from .models import (
     SellerProfile,
     Store,
 )
+
+def login_view(request):
+    if request.user.is_authenticated:
+        return redirect("home")
+    form = UserLoginForm(request, data=request.POST or None)
+    if request.method == "POST" and form.is_valid():
+        login(request, form.get_user())
+        return redirect("home")
+    return render(request, "registration/login.html", {"form": form})
+
+
+@login_required
+def logout_view(request):
+    if request.method != "POST":
+        raise PermissionDenied
+    logout(request)
+    return render(request, "registration/logged_out.html")
+
 
 STORE_NAME = "مهرا"
 

@@ -1,8 +1,25 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth.models import User
 
 from .models import Product, Store
+
+
+class UserLoginForm(AuthenticationForm):
+    error_messages = {
+        "invalid_login": "نام کاربری یا رمز عبور نادرست است.",
+        "inactive": "این حساب غیرفعال است.",
+    }
+    username = forms.CharField(
+        label="نام کاربری",
+        max_length=150,
+        widget=forms.TextInput(attrs={"autocomplete": "username", "autofocus": True}),
+    )
+    password = forms.CharField(
+        label="رمز عبور",
+        strip=False,
+        widget=forms.PasswordInput(attrs={"autocomplete": "current-password"}),
+    )
 
 
 class StoreForm(forms.ModelForm):

@@ -23,8 +23,9 @@ from shop import views as shop_views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('shop.urls')),
+    path('accounts/login/', shop_views.login_view, name='login'),
+    path('accounts/logout/', shop_views.logout_view, name='logout'),
     path('accounts/signup/', shop_views.signup, name='signup'),
-    path('accounts/', include('django.contrib.auth.urls')),
 ]
 
 if settings.DEBUG:
