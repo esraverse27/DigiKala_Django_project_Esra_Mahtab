@@ -1,14 +1,14 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}خانه | دیجی‌کالا{% endblock %}
+{% block title %}خانه | مهرا{% endblock %}
 
 {% block content %}
 <div class="home-page" dir="rtl">
     <section class="home-hero">
-        <p class="hero-eyebrow">خرید آسان، انتخاب هوشمند</p>
-        <h1>به فروشگاه دیجی‌کالا خوش آمدید</h1>
-        <p class="hero-description">محصول موردنظرتان را پیدا کنید و از فروشگاه‌های ما دیدن کنید.</p>
+        <p class="hero-eyebrow">خریدی گرم و دلنشین</p>
+        <h1>به فروشگاه مهرا خوش آمدید</h1>
+        <p class="hero-description">محصول موردعلاقه‌ات را در ویترین مهرا پیدا کن.</p>
 
         <form class="product-search" method="get" action="{% url 'home' %}">
             <label class="visually-hidden" for="product-search">جست‌وجوی محصول یا فروشگاه</label>
@@ -18,10 +18,28 @@
         </form>
     </section>
 
+    <section class="home-stores" aria-labelledby="stores-title">
+        <div class="section-heading">
+            <div><p class="section-eyebrow">فهرست فروشگاه‌ها</p><h2 id="stores-title">فروشگاه‌های مهرا</h2></div>
+            <a class="store-visit-link" href="{% url 'stores' %}">مشاهده همه فروشگاه‌ها ←</a>
+        </div>
+        <div class="store-list-grid">
+            {% for store in stores %}
+                <a class="store-list-card" href="{% url 'store_detail' store.id %}">
+                    <span class="store-list-icon" aria-hidden="true">ف</span>
+                    <span class="store-list-copy"><strong>{{ store.name }}</strong><small>{{ store.description|truncatewords:12 }}</small></span>
+                    <span class="store-list-arrow" aria-hidden="true">←</span>
+                </a>
+            {% empty %}
+                <div class="store-list-empty">{% if query %}ÙØ±ÙˆØ´Ú¯Ø§Ù‡ÛŒ Ø¨Ø§ Ø§ÛŒÙ† Ù†Ø§Ù… Ù¾ÛŒØ¯Ø§ Ù†Ø´Ø¯.{% else %}Ù‡Ù†ÙˆØ² ÙØ±ÙˆØ´Ú¯Ø§Ù‡ÛŒ Ø«Ø¨Øª Ù†Ø´Ø¯Ù‡ Ø§Ø³Øª.{% endif %}</div>
+            {% endfor %}
+        </div>
+    </section>
+
     <section class="products-section" aria-labelledby="products-title">
         <div class="section-heading">
             <div>
-                <p class="section-eyebrow">ویترین فروشگاه</p>
+                <p class="section-eyebrow">ویترین مهرا</p>
                 <h2 id="products-title">محصولات</h2>
             </div>
             {% if query %}
@@ -31,35 +49,39 @@
             {% endif %}
         </div>
 
-        <div class="product-grid">
-            {% for product in products %}
-                <article class="product-card">
-                    <div class="product-image-wrap">
-                        {% if product.image %}
-                            <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image">
-                        {% else %}
-                            <div class="product-image-placeholder" aria-label="تصویری برای محصول ثبت نشده است">تصویر محصول</div>
-                        {% endif %}
-                    </div>
-                    <div class="product-info">
-                        <p class="product-store">{{ product.store.name }}</p>
-                        <h3>{{ product.name }}</h3>
-                        <p class="product-price"><span>{{ product.price|floatformat:"-2" }}</span> تومان</p>
-                    </div>
-                </article>
-            {% empty %}
-                <div class="empty-products">
-                    <span class="empty-icon" aria-hidden="true">⌕</span>
-                    {% if query %}
-                        <h3>محصولی پیدا نشد</h3>
-                        <p>عبارت دیگری را جست‌وجو کنید.</p>
-                    {% else %}
-                        <h3>هنوز محصولی ثبت نشده است</h3>
-                        <p>به‌محض اضافه‌شدن محصولات، آن‌ها را همین‌جا می‌بینید.</p>
-                    {% endif %}
+        {% for group in store_groups %}
+            <section class="store-showcase">
+                <div class="section-heading">
+                    <div><p class="section-eyebrow">فروشگاه</p><h2>{{ group.store.name }}</h2></div>
                 </div>
-            {% endfor %}
-        </div>
+                <div class="product-grid">
+                    {% for product in group.products %}
+                        <article class="product-card">
+                            <div class="product-image-wrap">
+                                {% if product.image %}<img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image">
+                                {% else %}<div class="product-image-placeholder">تصویر محصول</div>{% endif %}
+                            </div>
+                            <div class="product-info">
+                                <h3>{{ product.name }}</h3>
+                                <p class="product-price"><span>{{ product.price|floatformat:"-2" }}</span> تومان</p>
+                                {% if is_customer %}
+                                    <form method="post" action="{% url 'add_to_cart' product.id %}" class="add-cart-form">
+                                        {% csrf_token %}<input type="hidden" name="next" value="{{ request.path }}">
+                                        <button type="submit" class="btn">افزودن به سبد</button>
+                                    </form>
+                                {% endif %}
+                            </div>
+                        </article>
+                    {% endfor %}
+                </div>
+            </section>
+        {% empty %}
+            <div class="empty-products">
+                <span class="empty-icon" aria-hidden="true">⌕</span>
+                {% if query %}<h3>محصولی پیدا نشد</h3><p>عبارت دیگری را جست‌وجو کن.</p>
+                {% else %}<h3>هنوز محصولی ثبت نشده است</h3><p>بعد از ثبت محصولات، هر فروشگاه در بخش جداگانه نمایش داده می‌شود.</p>{% endif %}
+            </div>
+        {% endfor %}
     </section>
 </div>
 {% endblock %}

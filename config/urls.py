@@ -18,10 +18,12 @@ from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import include, path
+from shop import views as shop_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('shop.urls')),
+    path('accounts/signup/', shop_views.signup, name='signup'),
     path('accounts/', include('django.contrib.auth.urls')),
 ]
 

@@ -4,30 +4,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}دیجی‌کالا{% endblock %}</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <title>{% block title %}مهرا{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=20261008-mahra-roles">
 </head>
 <body>
-    <nav class="navbar">
+    <nav class="navbar" aria-label="ناوبری اصلی">
         <div class="container navbar-content">
-            <a href="{% url 'home' %}" class="logo">دیجی‌کالا</a>
+            <a href="{% url 'home' %}" class="brand" aria-label="مهرا، صفحه اصلی">
+                <span class="brand-mark">م</span>
+                <span class="brand-copy"><strong>مهرا</strong><small>فروشگاه آنلاین</small></span>
+            </a>
             <div class="nav-right">
+                <div class="nav-links">
+                    <a class="nav-home{% if request.resolver_match.url_name == 'home' %} is-current{% endif %}" href="{% url 'home' %}">خانه</a>
+                    <a class="nav-stores{% if request.resolver_match.url_name == 'stores' or request.resolver_match.url_name == 'store_detail' %} is-current{% endif %}" href="{% url 'stores' %}">فروشگاه‌ها</a>
+                </div>
                 {% if user.is_authenticated %}
-                    <span class="nav-user">{{ user.username }}</span>
-                    <a href="{% url 'logout' %}">خروج</a>
+                    {% if user.is_superuser and user.username == "admin" %}
+                        <a class="nav-manager{% if request.resolver_match.url_name == 'manager_panel' %} is-current{% endif %}" href="{% url 'manager_panel' %}">مدیریت سراسری</a>
+                        <span class="nav-user"><span class="nav-user-role">مدیر</span>{{ user.username }}</span>
+                    {% elif user.sellerprofile %}
+                        <a class="nav-manager{% if request.resolver_match.url_name == 'seller_panel' %} is-current{% endif %}" href="{% url 'seller_panel' %}">پنل فروشنده</a>
+                        <span class="nav-user"><span class="nav-user-role">فروشنده</span>{{ user.username }}</span>
+                    {% elif user.customerprofile %}
+                        <a class="nav-manager{% if request.resolver_match.url_name == 'customer_panel' %} is-current{% endif %}" href="{% url 'customer_panel' %}">حساب من</a>
+                        <a class="nav-cart{% if request.resolver_match.url_name == 'cart' %} is-current{% endif %}" href="{% url 'cart' %}">سبد خرید</a>
+                        <span class="nav-user"><span class="nav-user-role">مشتری</span>{{ user.username }}</span>
+                    {% endif %}
+                    <form class="nav-logout-form" method="post" action="{% url 'logout' %}">
+                        {% csrf_token %}
+                        <button class="nav-logout" type="submit">خروج</button>
+                    </form>
                 {% else %}
-                    <a href="{% url 'login' %}">ورود</a>
+                    <a class="nav-cart" href="{% url 'cart' %}">سبد خرید</a>
+                    <div class="nav-auth">
+                        <a class="nav-login" href="{% url 'login' %}">ورود</a>
+                        <a class="nav-signup" href="{% url 'signup' %}">ثبت‌نام</a>
+                    </div>
                 {% endif %}
             </div>
         </div>
     </nav>
 
     <main class="container page-content">
+        {% if messages %}
+            <div class="site-messages" role="status">
+                {% for message in messages %}<p class="{{ message.tags }}">{{ message }}</p>{% endfor %}
+            </div>
+        {% endif %}
         {% block content %}{% endblock %}
     </main>
 
     <footer class="footer">
-        <p>© دیجی‌کالا — تجربه‌ای آسان برای خرید آنلاین</p>
+        <p>© مهرا — انتخابی دلنشین برای شما</p>
     </footer>
 
     {% block scripts %}{% endblock %}

@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %}سفارش‌های من | مهرا{% endblock %}
+
+{% block content %}
+<section dir="rtl">
+    <h1>سفارش‌های من</h1>
+    {% for order in orders %}
+        <article class="manager-card order-card">
+            <h2>سفارش {{ order.id }}</h2>
+            <p>زمان ثبت: {{ order.created_at|date:"Y/m/d H:i" }} — {% if order.is_paid %}پرداخت آزمایشی‌شده{% else %}پرداخت‌نشده{% endif %}</p>
+            <ul>
+                {% for line in order.orderitem_set.all %}
+                    <li>{{ line.product.name }} × {{ line.quantity }} — {{ line.product.price|floatformat:"-2" }} تومان</li>
+                {% endfor %}
+            </ul>
+            <strong>جمع: {{ order.total|floatformat:"-2" }} تومان</strong>
+        </article>
+    {% empty %}
+        <p>هنوز سفارشی ثبت نکرده‌ای.</p>
+    {% endfor %}
+</section>
+{% endblock %}

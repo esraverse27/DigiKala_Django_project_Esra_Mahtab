@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %}ویرایش محصول | مهرا{% endblock %}
+
+{% block content %}
+<div class="manager-page" dir="rtl">
+    <section class="manager-card manager-add-product">
+        <p class="manager-kicker">فروشگاه {{ store_name }}</p>
+        <h1 class="manager-form-title">ویرایش محصول</h1>
+        <p class="manager-form-intro">اطلاعات «{{ product.name }}» را ویرایش کن.</p>
+        <form method="post" enctype="multipart/form-data" class="manager-form">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+            {% for field in form %}
+                <div class="field-group {% if field.name == 'image' %}file-field{% endif %}">
+                    {{ field.label_tag }}{{ field }}{{ field.errors }}
+                    {% if field.name == 'image' and product.image %}<small>برای نگه‌داشتن تصویر فعلی، این قسمت را خالی بگذار.</small>{% endif %}
+                </div>
+            {% endfor %}
+            <div class="manager-form-actions">
+                <button type="submit" class="manager-button primary-button">ذخیره تغییرات</button>
+                <a class="manager-cancel-link" href="{% url panel_url %}">بازگشت</a>
+            </div>
+        </form>
+    </section>
+</div>
+{% endblock %}

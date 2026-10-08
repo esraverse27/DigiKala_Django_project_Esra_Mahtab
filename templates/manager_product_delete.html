@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}حذف محصول | مهرا{% endblock %}
+
+{% block content %}
+<div class="manager-page" dir="rtl">
+    <section class="manager-card manager-delete-card">
+        <p class="manager-kicker">فروشگاه {{ store_name }}</p>
+        <h1 class="manager-form-title">حذف محصول</h1>
+        <p class="manager-form-intro">آیا مطمئنی محصول «{{ product.name }}» حذف شود؟ تصویر آن هم پاک خواهد شد.</p>
+        <form method="post" class="manager-form-actions">
+            {% csrf_token %}
+            <button type="submit" class="manager-button delete-button">بله، حذف شود</button>
+            <a class="manager-cancel-link" href="{% url panel_url %}">انصراف</a>
+        </form>
+    </section>
+</div>
+{% endblock %}

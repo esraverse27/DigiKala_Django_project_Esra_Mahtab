@@ -1,14 +1,14 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}{{ store.name }} | DijiKala{% endblock %}
+{% block title %}{{ store.name }} | مهرا{% endblock %}
 
 {% block content %}
 <div class="store-header">
     <h2>{{ store.name }}</h2>
     <p>{{ store.description }}</p>
 
-    {% if user == store.owner.user %}
-        <a href="{% url 'add_product' store.id %}" class="btn">+ Add Product</a>
+    {% if is_owner %}
+        <a href="{% url 'seller_panel' %}" class="btn">مدیریت فروشگاه</a>
     {% endif %}
 </div>
 
@@ -17,19 +17,17 @@
 <div class="card-grid">
     {% for product in products %}
         <div class="card">
-            {% if product.image %}
-                <img src="{{ product.image.url }}" alt="{{ product.name }}">
-            {% else %}
-                <img src="{% static 'images/default_product.jpg' %}" alt="No image">
-            {% endif %}
+            {% if product.image %}<img src="{{ product.image.url }}" alt="{{ product.name }}">{% endif %}
             <h3>{{ product.name }}</h3>
-            <p>{{ product.description|truncatewords:12 }}</p>
-            <p><strong>${{ product.price }}</strong></p>
+            <p><strong>{{ product.price|floatformat:"-2" }} تومان</strong></p>
 
-            {% if user.is_authenticated %}
-                <a href="{% url 'add_to_cart' product.id %}" class="btn">Add to Cart</a>
-            {% else %}
-                <p><a href="{% url 'login' %}">Login to Buy</a></p>
+            {% if is_customer %}
+                <form method="post" action="{% url 'add_to_cart' product.id %}">
+                    {% csrf_token %}<input type="hidden" name="next" value="{{ request.path }}">
+                    <button type="submit" class="btn">افزودن به سبد خرید</button>
+                </form>
+            {% elif not user.is_authenticated %}
+                <p><a href="{% url 'login' %}">برای خرید وارد شو</a></p>
             {% endif %}
         </div>
     {% empty %}

@@ -1,13 +1,14 @@
 {% extends 'base.html' %}
-{% block title %}Payment | DijiKala{% endblock %}
+{% block title %}پرداخت آزمایشی | مهرا{% endblock %}
 
 {% block content %}
-<h2>💳 Add Balance</h2>
+<h1>افزایش موجودی آزمایشی</h1>
+<p>این پرداخت فقط برای آزمایش پروژه است و تراکنش واقعی انجام نمی‌دهد. موجودی فعلی: {{ customer.balance|floatformat:"-2" }} تومان</p>
 
 <form action="{% url 'payment' %}" method="post" class="payment-form">
     {% csrf_token %}
-    <label for="amount">Enter amount:</label>
-    <input type="number" name="amount" id="amount" min="1" required>
-    <button type="submit" class="btn">Add Balance</button>
+    <label for="amount">مبلغ (تومان):</label>
+    <input type="number" name="amount" id="amount" min="1" step="1" required>
+    <button type="submit" class="btn">افزایش موجودی آزمایشی</button>
 </form>
 {% endblock %}
