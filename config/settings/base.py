@@ -70,7 +70,7 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES : dict = {}
 
-AUTH_USER_MODEL = 'accounts.user'
+AUTH_USER_MODEL = 'accounts.User'
 
 
 # Password validation

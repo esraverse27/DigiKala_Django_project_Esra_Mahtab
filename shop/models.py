@@ -1,8 +1,7 @@
 from django.db import models
 
-# Create your models here.
-
-from django.contrib.auth.models import User
+from django.conf import settings
+User = settings.AUTH_USER_MODEL
 
 # Profiles
 class CustomerProfile(models.Model):
