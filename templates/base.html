@@ -13,7 +13,6 @@
             <a href="{% url 'home' %}" class="logo">دیجی‌کالا</a>
             <div class="nav-right">
                 {% if user.is_authenticated %}
-                    <span class="nav-user">{{ user.username }}</span>
                     <a href="{% url 'logout' %}">خروج</a>
                 {% else %}
                     <a href="{% url 'login' %}">ورود</a>

@@ -14,7 +14,7 @@ def login_view(request):
 
         else:
             form = UserLoginForm()
-            return render(request, 'registration/login.html', {'error':'username or password is incorrect', 'form':form})
+            return render(request, 'registration/login.html', {'error':'نام کاربری یا رمز عبور اشتباه است', 'form':form})
 
     else:
         form = UserLoginForm()
