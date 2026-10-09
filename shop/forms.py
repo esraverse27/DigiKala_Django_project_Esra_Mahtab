@@ -31,7 +31,7 @@ class StoreForm(forms.ModelForm):
             "description": "توضیحات فروشگاه",
         }
         widgets = {
-            "name": forms.TextInput(attrs={"placeholder": "مثلاً مهرا"}),
+            "name": forms.TextInput(attrs={"placeholder": "مثلاً خانومی"}),
             "description": forms.Textarea(attrs={"rows": 3, "placeholder": "درباره فروشگاه بنویسید"}),
         }
 
@@ -44,7 +44,7 @@ class AdminStoreForm(StoreForm):
             "seller": "فروشنده",
         }
         widgets = {
-            "name": forms.TextInput(attrs={"placeholder": "مثلاً مهرا"}),
+            "name": forms.TextInput(attrs={"placeholder": "مثلاً خانومی"}),
             "description": forms.Textarea(attrs={"rows": 3, "placeholder": "درباره فروشگاه بنویسید"}),
         }
 
@@ -82,15 +82,18 @@ class SignupForm(UserCreationForm):
 class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
-        fields = ("name", "price", "image")
+        fields = ("name", "category", "price", "stock", "image")
         labels = {
             "name": "نام محصول",
+            "category": "دسته‌بندی محصول",
             "price": "قیمت (تومان)",
+            "stock": "موجودی محصول",
             "image": "عکس محصول",
         }
         widgets = {
             "name": forms.TextInput(attrs={"placeholder": "مثلاً کیف دستی"}),
             "price": forms.NumberInput(attrs={"min": "0", "step": "1", "placeholder": "قیمت محصول"}),
+            "stock": forms.NumberInput(attrs={"min": "0", "step": "1", "placeholder": "تعداد کالای موجود"}),
         }
 
 
@@ -102,7 +105,7 @@ class AdminProductForm(ProductForm):
     )
 
     class Meta(ProductForm.Meta):
-        fields = ("store", "name", "price", "image")
+        fields = ("store", "name", "category", "price", "stock", "image")
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

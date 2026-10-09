@@ -37,7 +37,7 @@ def logout_view(request):
     return render(request, "registration/logged_out.html")
 
 
-STORE_NAME = "مهرا"
+STORE_NAME = "خانومی"
 
 
 def _is_admin(user):
@@ -86,7 +86,13 @@ def _seller_products(user):
 
 def home(request):
     query = request.GET.get("q", "").strip()
+    selected_category = request.GET.get("category", "")
+    valid_categories = {value for value, _label in Product.Category.choices}
+    if selected_category not in valid_categories:
+        selected_category = ""
     products = Product.objects.select_related("store").order_by("-id")
+    if selected_category:
+        products = products.filter(category=selected_category)
     if query:
         products = products.filter(Q(name__icontains=query) | Q(store__name__icontains=query))
     products_by_store = Prefetch("product_set", queryset=products, to_attr="visible_products")
@@ -99,10 +105,14 @@ def home(request):
     listed_stores = Store.objects.order_by("name")
     if query:
         listed_stores = listed_stores.filter(name__icontains=query)
+    if selected_category:
+        listed_stores = listed_stores.filter(product__category=selected_category).distinct()
     return render(request, "home.html", {
         "store_groups": store_groups,
         "stores": listed_stores,
         "query": query,
+        "categories": Product.Category.choices,
+        "selected_category": selected_category,
         "is_customer": is_customer,
     })
 
@@ -301,6 +311,13 @@ def add_to_cart(request, product_id):
     customer = _require_customer(request)
     product = get_object_or_404(Product, pk=product_id)
     item = CartItem.objects.filter(customer=customer, product=product).first()
+    current_quantity = item.quantity if item else 0
+    if product.stock < 1:
+        messages.error(request, "این محصول در حال حاضر ناموجود است.")
+        return redirect("cart")
+    if current_quantity >= product.stock:
+        messages.error(request, "تعداد درخواستی از موجودی فروشگاه بیشتر است.")
+        return redirect("cart")
     if item:
         item.quantity += 1
         item.save(update_fields=["quantity"])
@@ -332,6 +349,8 @@ def update_cart_item(request, item_id):
         quantity = 0
     if quantity < 1 or quantity > 999:
         messages.error(request, "تعداد باید بین ۱ تا ۹۹۹ باشد.")
+    elif quantity > item.product.stock:
+        messages.error(request, f"از این محصول فقط {item.product.stock} عدد موجود است.")
     else:
         item.quantity = quantity
         item.save(update_fields=["quantity"])
@@ -376,6 +395,17 @@ def checkout(request):
     with transaction.atomic():
         customer = CustomerProfile.objects.select_for_update().get(pk=customer.pk)
         items = list(CartItem.objects.filter(customer=customer).select_related("product"))
+        locked_products = {
+            product.pk: product
+            for product in Product.objects.select_for_update().filter(
+                pk__in=[item.product_id for item in items]
+            ).order_by("pk")
+        }
+        for item in items:
+            item.product = locked_products[item.product_id]
+            if item.quantity > item.product.stock:
+                messages.error(request, f"موجودی {item.product.name} برای تعداد داخل سبد کافی نیست.")
+                return redirect("cart")
         total = sum((item.product.price * item.quantity for item in items), Decimal("0"))
         if not items:
             messages.error(request, "سبد خرید خالی است.")
@@ -388,6 +418,13 @@ def checkout(request):
             OrderItem(order=order, product=item.product, quantity=item.quantity)
             for item in items
         ])
+        quantities_by_product = {}
+        for item in items:
+            quantities_by_product[item.product_id] = quantities_by_product.get(item.product_id, 0) + item.quantity
+        for product_id, quantity in quantities_by_product.items():
+            product = locked_products[product_id]
+            product.stock -= quantity
+            product.save(update_fields=["stock"])
         customer.balance -= total
         customer.save(update_fields=["balance"])
         CartItem.objects.filter(customer=customer).delete()
