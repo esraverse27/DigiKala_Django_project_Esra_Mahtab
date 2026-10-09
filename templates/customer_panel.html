@@ -1,9 +1,9 @@
 {% extends 'base.html' %}
-{% block title %}حساب مشتری | مهرا{% endblock %}
+{% block title %}حساب مشتری | خانومی{% endblock %}
 
 {% block content %}
 <section class="customer-page" dir="rtl">
-    <header class="manager-hero"><div><p class="manager-kicker">حساب مشتری</p><h1>سلام {{ customer.user.username }}</h1><p>از فروشگاه‌های مهرا دیدن کن و خرید آزمایشی انجام بده.</p></div></header>
+    <header class="manager-hero"><div><p class="manager-kicker">حساب مشتری</p><h1>سلام {{ customer.user.username }}</h1><p>از فروشگاه‌های خانومی دیدن کن و خرید آزمایشی انجام بده.</p></div></header>
     <div class="customer-actions">
         <article class="manager-card"><p>شماره تماس: {{ customer.phone }}</p><p>موجودی آزمایشی: <strong>{{ customer.balance|floatformat:"-2" }} تومان</strong></p><a class="manager-button primary-button" href="{% url 'payment' %}">افزایش موجودی آزمایشی</a></article>
         <article class="manager-card"><h2>خریدهای من</h2><a class="manager-button primary-button" href="{% url 'stores' %}">دیدن فروشگاه‌ها</a> <a class="manager-button secondary-button" href="{% url 'cart' %}">سبد خرید</a> <a class="manager-cancel-link" href="{% url 'order_history' %}">سفارش‌های قبلی</a></article>

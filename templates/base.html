@@ -4,15 +4,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}مهرا{% endblock %}</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=20261008-mahra-roles">
+    <title>{% block title %}خانومی{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=20261009-store-icons">
 </head>
 <body>
     <nav class="navbar" aria-label="ناوبری اصلی">
         <div class="container navbar-content">
-            <a href="{% url 'home' %}" class="brand" aria-label="مهرا، صفحه اصلی">
-                <span class="brand-mark">م</span>
-                <span class="brand-copy"><strong>مهرا</strong><small>فروشگاه آنلاین</small></span>
+            <a href="{% url 'home' %}" class="brand" aria-label="خانومی، صفحه اصلی">
+                <img class="brand-logo" src="{% static 'images/khanoomi-logo.svg' %}" alt="خانومی">
+                <span class="brand-copy"><small>فروشگاه آنلاین</small></span>
             </a>
             <div class="nav-right">
                 <div class="nav-links">
@@ -56,7 +56,7 @@
     </main>
 
     <footer class="footer">
-        <p>© مهرا — انتخابی دلنشین برای شما</p>
+        <p>© خانومی — انتخابی دلنشین برای شما</p>
     </footer>
 
     {% block scripts %}{% endblock %}

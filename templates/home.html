@@ -1,37 +1,47 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}خانه | مهرا{% endblock %}
+{% block title %}خانه | خانومی{% endblock %}
 
 {% block content %}
 <div class="home-page" dir="rtl">
     <section class="home-hero">
         <p class="hero-eyebrow">خریدی گرم و دلنشین</p>
-        <h1>به فروشگاه مهرا خوش آمدید</h1>
-        <p class="hero-description">محصول موردعلاقه‌ات را در ویترین مهرا پیدا کن.</p>
+        <h1>به فروشگاه خانومی خوش آمدید</h1>
+        <p class="hero-description">محصول موردعلاقه‌ات را در ویترین خانومی پیدا کن.</p>
 
         <form class="product-search" method="get" action="{% url 'home' %}">
             <label class="visually-hidden" for="product-search">جست‌وجوی محصول یا فروشگاه</label>
             <input id="product-search" type="search" name="q" value="{{ query }}"
                    placeholder="نام محصول یا فروشگاه را جست‌وجو کنید">
+            {% if selected_category %}<input type="hidden" name="category" value="{{ selected_category }}">{% endif %}
             <button type="submit">جست‌وجو</button>
         </form>
     </section>
 
+    <nav class="category-filters" aria-label="دسته‌بندی محصولات">
+        <a class="category-filter{% if not selected_category %} is-selected{% endif %}" href="{% url 'home' %}{% if query %}?q={{ query|urlencode }}{% endif %}">همه محصولات</a>
+        {% for value, label in categories %}
+            <a class="category-filter{% if selected_category == value %} is-selected{% endif %}" href="?category={{ value }}{% if query %}&amp;q={{ query|urlencode }}{% endif %}"{% if selected_category == value %} aria-current="true"{% endif %}>{{ label }}</a>
+        {% endfor %}
+    </nav>
+
     <section class="home-stores" aria-labelledby="stores-title">
         <div class="section-heading">
-            <div><p class="section-eyebrow">فهرست فروشگاه‌ها</p><h2 id="stores-title">فروشگاه‌های مهرا</h2></div>
+            <div><p class="section-eyebrow">فهرست فروشگاه‌ها</p><h2 id="stores-title">فروشگاه‌های خانومی</h2></div>
             <a class="store-visit-link" href="{% url 'stores' %}">مشاهده همه فروشگاه‌ها ←</a>
         </div>
         <div class="store-list-grid">
             {% for store in stores %}
                 <a class="store-list-card" href="{% url 'store_detail' store.id %}">
-                    <span class="store-list-icon" aria-hidden="true">ف</span>
+                    <span class="store-list-icon" aria-hidden="true"><img src="{% static 'images/store-bag-icon.svg' %}" alt=""></span>
                     <span class="store-list-copy"><strong>{{ store.name }}</strong><small>{{ store.description|truncatewords:12 }}</small></span>
                     <span class="store-list-arrow" aria-hidden="true">←</span>
                 </a>
             {% empty %}
-                <div class="store-list-empty">{% if query %}ÙØ±ÙˆØ´Ú¯Ø§Ù‡ÛŒ Ø¨Ø§ Ø§ÛŒÙ† Ù†Ø§Ù… Ù¾ÛŒØ¯Ø§ Ù†Ø´Ø¯.{% else %}Ù‡Ù†ÙˆØ² ÙØ±ÙˆØ´Ú¯Ø§Ù‡ÛŒ Ø«Ø¨Øª Ù†Ø´Ø¯Ù‡ Ø§Ø³Øª.{% endif %}</div>
+                <div class="store-list-empty">
+                    {% if query %}فروشگاهی با این نام پیدا نشد.{% elif selected_category %}هنوز محصولی در این دسته‌بندی ثبت نشده است.{% else %}هنوز فروشگاهی ثبت نشده است.{% endif %}
+                </div>
             {% endfor %}
         </div>
     </section>
@@ -39,7 +49,7 @@
     <section class="products-section" aria-labelledby="products-title">
         <div class="section-heading">
             <div>
-                <p class="section-eyebrow">ویترین مهرا</p>
+                <p class="section-eyebrow">ویترین خانومی</p>
                 <h2 id="products-title">محصولات</h2>
             </div>
             {% if query %}
@@ -63,12 +73,14 @@
                             </div>
                             <div class="product-info">
                                 <h3>{{ product.name }}</h3>
+                                <span class="product-category-badge">{{ product.get_category_display }}</span>
                                 <p class="product-price"><span>{{ product.price|floatformat:"-2" }}</span> تومان</p>
+                                <p class="product-stock">موجودی: {{ product.stock }}</p>
                                 {% if is_customer %}
-                                    <form method="post" action="{% url 'add_to_cart' product.id %}" class="add-cart-form">
+                                    {% if product.stock > 0 %}<form method="post" action="{% url 'add_to_cart' product.id %}" class="add-cart-form">
                                         {% csrf_token %}<input type="hidden" name="next" value="{{ request.path }}">
                                         <button type="submit" class="btn">افزودن به سبد</button>
-                                    </form>
+                                    </form>{% else %}<span class="stock-unavailable">ناموجود</span>{% endif %}
                                 {% endif %}
                             </div>
                         </article>
