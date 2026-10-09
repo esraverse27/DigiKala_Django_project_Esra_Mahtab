@@ -20,10 +20,23 @@ class Store(models.Model):
     description = models.TextField()
 
 class Product(models.Model):
+    class Category(models.TextChoices):
+        CLOTHING = "clothing", "پوشاک"
+        HYGIENE = "hygiene", "بهداشتی"
+        JEWELRY = "jewelry", "طلا و جواهرات"
+        COSMETICS = "cosmetics", "لوازم آرایشی"
+
     store = models.ForeignKey(Store, on_delete=models.CASCADE)
     name = models.CharField(max_length=200)
+    category = models.CharField(
+        max_length=20,
+        choices=Category.choices,
+        default=Category.CLOTHING,
+        verbose_name="دسته‌بندی",
+    )
     price = models.DecimalField(max_digits=10, decimal_places=2)
     image = models.ImageField(upload_to='products/')
+    stock = models.PositiveIntegerField(default=0, verbose_name="موجودی")
 
 # Transactions
 class CartItem(models.Model):

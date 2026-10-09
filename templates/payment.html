@@ -1,13 +1,33 @@
 {% extends 'base.html' %}
-{% block title %}Payment | DijiKala{% endblock %}
+{% block title %}افزایش موجودی آزمایشی | خانومی{% endblock %}
 
 {% block content %}
-<h2>💳 Add Balance</h2>
+<section class="payment-page" dir="rtl">
+    <header class="payment-hero">
+        <span class="payment-hero-icon" aria-hidden="true">ت</span>
+        <div>
+            <p class="payment-eyebrow">حساب مشتری</p>
+            <h1>افزایش موجودی</h1>
+            <p>برای ادامهٔ خرید آزمایشی، مبلغ دلخواهت را وارد کن.</p>
+        </div>
+    </header>
 
-<form action="{% url 'payment' %}" method="post" class="payment-form">
-    {% csrf_token %}
-    <label for="amount">Enter amount:</label>
-    <input type="number" name="amount" id="amount" min="1" required>
-    <button type="submit" class="btn">Add Balance</button>
-</form>
+    <div class="payment-layout">
+        <aside class="payment-balance-card">
+            <span class="payment-balance-label">موجودی فعلی</span>
+            <strong>{{ customer.balance|floatformat:"-2" }} <small>تومان</small></strong>
+            <p>این مبلغ در حساب آزمایشی خانومی ثبت شده است.</p>
+            <a href="{% url 'customer_panel' %}">بازگشت به حساب من <span aria-hidden="true">←</span></a>
+        </aside>
+
+        <form action="{% url 'payment' %}" method="post" class="payment-form payment-form-card">
+            {% csrf_token %}
+            <div class="payment-form-heading"><span>۱</span><div><h2>مبلغ شارژ</h2><p>مبلغ را به تومان وارد کن.</p></div></div>
+            <label for="amount">مبلغ (تومان)</label>
+            <div class="payment-input-wrap"><input type="number" name="amount" id="amount" min="1" step="1" placeholder="مثلاً ۱۰۰٬۰۰۰" required><span>تومان</span></div>
+            <button type="submit" class="btn payment-submit">افزایش موجودی آزمایشی</button>
+            <p class="payment-demo-note"><span aria-hidden="true">ⓘ</span> این پرداخت آزمایشی است و تراکنش بانکی واقعی انجام نمی‌دهد.</p>
+        </form>
+    </div>
+</section>
 {% endblock %}

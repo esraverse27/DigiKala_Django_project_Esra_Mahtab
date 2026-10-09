@@ -22,22 +22,8 @@ def login_view(request):
 
 
 def signin_view(request):
-    if not request.user.is_authenticated:
-    
-        if request.method == 'POST':
-            form = UserRegisterForm(request.POST)
-            if form.is_valid():
-                user = form.save()
-                login(request, user)
-                return render(request, 'home.html')
-            return render(request, 'registration/signup.html', {'form':form})
-
-        else:
-            form = UserRegisterForm()
-            return render(request, 'registration/signup.html', {'form':form})
-
-    else:
-        return redirect('home')
+    from shop.views import signup
+    return signup(request)
 
 def logout_view(request):
     logout(request)

@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if is_admin_panel %}پنل ادمین{% else %}پنل فروشنده{% endif %} | خانومی{% endblock %}
+
+{% block content %}
+<div class="manager-page" dir="rtl">
+    <header class="manager-hero">
+        <div>
+            <p class="manager-kicker">{% if is_admin_panel %}مدیریت سراسری خانومی{% else %}پنل فروشنده{% endif %}</p>
+            <h1>{% if is_admin_panel %}مدیریت فروشگاه‌ها و محصولات{% else %}فروشگاه {{ store_name }}{% endif %}</h1>
+            <p>{% if is_admin_panel %}همه فروشگاه‌ها و محصولات را مدیریت کن.{% else %}فقط فروشگاه و محصولات خودت را مدیریت کن.{% endif %}</p>
+        </div>
+        <div class="manager-stat"><span>{% if is_admin_panel %}همه محصولات خانومی{% else %}محصولات فروشگاه شما{% endif %}</span><strong>{{ product_count }}</strong></div>
+    </header>
+
+    <section class="manager-card manager-store-card">
+        <div class="manager-card-heading">
+            <span class="manager-step">۱</span>
+            <div>
+                <h2>{% if is_admin_panel %}ساخت فروشگاه برای فروشنده{% elif has_store %}اطلاعات فروشگاه{% else %}ساخت فروشگاه{% endif %}</h2>
+                <p>{% if is_admin_panel %}یک فروشنده‌ی ثبت‌نام‌شده انتخاب کن و فروشگاهش را بساز.{% else %}نام و توضیحات فروشگاه خودت را ثبت کن.{% endif %}</p>
+            </div>
+        </div>
+        <form method="post" class="manager-form">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="save_store">
+            {{ store_form.non_field_errors }}
+            {% for field in store_form %}
+                <div class="field-group">{{ field.label_tag }}{{ field }}{{ field.errors }}</div>
+            {% endfor %}
+            <button type="submit" class="manager-button secondary-button">
+                {% if is_admin_panel %}ساخت فروشگاه{% elif has_store %}ذخیره نام فروشگاه{% else %}ساخت فروشگاه{% endif %}
+            </button>
+        </form>
+    </section>
+
+    <section class="manager-card manager-add-product">
+        <div class="manager-card-heading">
+            <span class="manager-step">۲</span>
+            <div><h2>مشخصات محصول</h2><p>{% if is_admin_panel %}فروشگاه مقصد را هم انتخاب کن.{% else %}نام، قیمت و تصویر محصول را وارد کن.{% endif %}</p></div>
+        </div>
+        {% if has_store %}
+            <form method="post" enctype="multipart/form-data" class="manager-form">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="add_product">
+                {{ product_form.non_field_errors }}
+                {% for field in product_form %}
+                    <div class="field-group {% if field.name == 'image' %}file-field{% endif %}">
+                        {{ field.label_tag }}{{ field }}{{ field.errors }}
+                    </div>
+                {% endfor %}
+                <button type="submit" class="manager-button primary-button">{% if is_admin_panel %}ثبت محصول{% else %}ثبت محصول در {{ store_name }}{% endif %}</button>
+            </form>
+        {% else %}
+            <div class="manager-hint"><strong>اول فروشگاه را بساز</strong><p>بعد از ثبت نام فروشگاه، فرم افزودن محصول فعال می‌شود.</p></div>
+        {% endif %}
+    </section>
+
+    {% for group in store_groups %}
+        <section class="manager-products store-products-section">
+            <div class="manager-products-heading">
+                <div><p class="manager-kicker">ویترین فروشگاه</p><h2>{{ group.store.name }}</h2></div>
+                {% if not is_admin_panel %}<a class="manager-home-link" href="{% url 'store_detail' group.store.id %}">مشاهده صفحه فروشگاه ←</a>{% endif %}
+            </div>
+            <div class="manager-product-grid">
+                {% for product in group.products %}
+                    <article class="manager-product-card">
+                        {% if product.image %}<img src="{{ product.image.url }}" alt="{{ product.name }}">{% endif %}
+                        <div class="manager-product-info">
+                            <h3>{{ product.name }}</h3>
+                            <span class="product-category-badge">{{ product.get_category_display }}</span>
+                            <strong>{{ product.price|floatformat:"-2" }} تومان</strong>
+                            <p class="product-stock">موجودی: {{ product.stock }} عدد</p>
+                            <div class="manager-product-actions">
+                                {% if is_admin_panel %}
+                                    <a class="manager-button edit-button" href="{% url 'manager_edit_product' product.id %}">ویرایش</a>
+                                    <a class="manager-button delete-button" href="{% url 'manager_delete_product' product.id %}">حذف</a>
+                                {% else %}
+                                    <a class="manager-button edit-button" href="{% url 'seller_edit_product' product.id %}">ویرایش</a>
+                                    <a class="manager-button delete-button" href="{% url 'seller_delete_product' product.id %}">حذف</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </article>
+                {% empty %}
+                    <div class="manager-empty">هنوز محصولی برای این فروشگاه ثبت نشده است.</div>
+                {% endfor %}
+            </div>
+        </section>
+    {% empty %}
+        <div class="manager-empty">هنوز فروشگاهی ثبت نشده است.</div>
+    {% endfor %}
+</div>
+{% endblock %}

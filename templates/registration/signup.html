@@ -1,38 +1,22 @@
 {% extends 'base.html' %}
-{% block title %}دیجی کالا|ساخت حساب{% endblock %}
+{% block title %}ثبت‌نام | خانومی{% endblock %}
 
 {% block content %}
-<h2>ساخت حساب</h2>
-
-<form method="post" class="auth-form">
-    {% csrf_token %}
-    {{ form.non_field_errors }}
-
-    <div class="form-group">
-        <label for="id_first_name">نام</label>
-        {{ form.first_name }}
-    </div>
-    <div class="form-group">
-        <label for="id_last_name">نام خانوادگی</label>
-        {{ form.last_name }}
-    </div>
-    <div class="form-group">
-        <label for="id_phone">شماره تلفن</label>
-        {{ form.phone }}
-    </div>
-    <div class="form-group">
-        <label for="id_password1">رمز عبور</label>
-        {{ form.password1 }}
-    </div>
-    <div class="form-group">
-        <label for="id_password2">تکرار رمز عبور</label>
-        {{ form.password2 }}
-    </div>
-
-    <button type="submit" class="btn">تایید</button>
-
-    <p class="auth-link">حساب دارید؟ 
-        <a href="{% url 'login' %}">وارد شوید</a>
-    </p>
-</form>
+<section class="auth-page" dir="rtl">
+    <h1>ساخت حساب در خانومی</h1>
+    <p>نوع حساب را انتخاب کن؛ دسترسی ادمین فقط توسط مدیر پروژه ساخته می‌شود.</p>
+    <form method="post" class="auth-form">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        {% for field in form %}
+            <div class="form-group">
+                {{ field.label_tag }}{{ field }}
+                {% if field.help_text %}<small>{{ field.help_text }}</small>{% endif %}
+                {{ field.errors }}
+            </div>
+        {% endfor %}
+        <button type="submit" class="btn">ثبت‌نام</button>
+        <p class="auth-link">حساب داری؟ <a href="{% url 'login' %}">وارد شو</a></p>
+    </form>
+</section>
 {% endblock %}

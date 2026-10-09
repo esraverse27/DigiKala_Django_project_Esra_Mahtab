@@ -1,20 +1,10 @@
 {% extends 'base.html' %}
-{% block title %}Seller Panel | DijiKala{% endblock %}
+{% block title %}پنل فروشنده | خانومی{% endblock %}
 
 {% block content %}
-<h2>👨‍💼 Seller Panel</h2>
-
-<a href="{% url 'create_store' %}" class="btn">+ Create New Store</a>
-
-<div class="card-grid" style="margin-top: 20px;">
-    {% for store in stores %}
-        <div class="card">
-            <h3>{{ store.name }}</h3>
-            <p>{{ store.description|truncatewords:15 }}</p>
-            <a href="{% url 'store_detail' store.id %}" class="btn">Manage Store</a>
-        </div>
-    {% empty %}
-        <p>You have no stores yet.</p>
-    {% endfor %}
+<div class="manager-page" dir="rtl">
+    <header class="manager-hero"><div><p class="manager-kicker">فضای فروشنده</p><h1>فروشگاه‌ها و کالاهای من</h1><p>از پنل فروشنده می‌توانی فروشگاه خودت و محصولاتش را مدیریت کنی.</p></div></header>
+    {% if store %}<section class="manager-card"><h2>{{ store.name }}</h2><p>{{ store.description }}</p><a class="manager-button primary-button" href="{% url 'store_detail' store.id %}">مشاهده فروشگاه</a></section>{% else %}<p>برای شروع، نام فروشگاهت را در فرم ساخت فروشگاه ثبت کن.</p>{% endif %}
+    <a class="manager-button primary-button" href="{% url 'seller_panel' %}">مدیریت فروشگاه و محصولات</a>
 </div>
 {% endblock %}
