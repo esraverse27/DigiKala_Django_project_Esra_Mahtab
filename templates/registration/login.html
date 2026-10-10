@@ -1,28 +1,46 @@
 {% extends 'base.html' %}
-{% block title %}دیجی کالا|ورود به حساب{% endblock %}
+{% block title %}ورود | خانومی{% endblock %}
 
 {% block content %}
-<h2> ورود به حساب</h2>
+<section class="auth-page" dir="rtl">
+    <h1>ورود به حساب</h1>
+    <p>برای ادامه، شماره تلفن و رمز عبورت را وارد کن.</p>
+    <form method="post" class="auth-form">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        <div class="form-group">
+            {{ form.username.label_tag }}
+            {{ form.username }}
+            {{ form.username.errors }}
+        </div>
+        <div class="form-group">
+            {{ form.password.label_tag }}
+            <div class="password-input-wrap">
+                {{ form.password }}
+                <button class="password-toggle" type="button" aria-label="نمایش رمز عبور" aria-pressed="false" aria-controls="id_password">
+                    <svg class="password-eye-open" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>
+                    <svg class="password-eye-closed" viewBox="0 0 24 24" aria-hidden="true"><path d="m3 3 18 18M10.6 10.6a2 2 0 0 0 2.8 2.8M9.9 5.2A10.8 10.8 0 0 1 12 5c6.4 0 10 7 10 7a17 17 0 0 1-3.1 3.8M6.2 6.2C3.5 8 2 12 2 12s3.6 7 10 7c1.2 0 2.3-.2 3.3-.6"/></svg>
+                </button>
+            </div>
+            {{ form.password.errors }}
+        </div>
+        <button type="submit" class="btn">ورود</button>
+        <p class="auth-link">حساب نداری؟ <a href="{% url 'signup' %}">ثبت‌نام کن</a></p>
+    </form>
+</section>
+{% endblock %}
 
-<form method="post" class="auth-form">
-    {% csrf_token %}
-    {{ form.non_field_errors }}
-    <div class="form-group">
-        <label for="id_username">شماره تلفن</label>
-        {{ form.username }}
-    </div>
-    <div class="form-group">
-        <label for="id_password">رمز عبور</label>
-        {{ form.password }}
-    </div>
-    {% if error %}
-        {{ error }}
-    {% endif %}
-
-    <button type="submit" class="btn">ورود</button>
-
-    <p class="auth-link">حساب ندارید؟ 
-        <a href="{% url 'signup' %}">ساخت حساب</a>
-    </p>
-</form>
+{% block scripts %}
+<script>
+    const passwordField = document.getElementById("id_password");
+    const passwordToggle = document.querySelector(".password-toggle");
+    if (passwordField && passwordToggle) {
+        passwordToggle.addEventListener("click", () => {
+            const reveal = passwordField.type === "password";
+            passwordField.type = reveal ? "text" : "password";
+            passwordToggle.setAttribute("aria-pressed", String(reveal));
+            passwordToggle.setAttribute("aria-label", reveal ? "پنهان کردن رمز عبور" : "نمایش رمز عبور");
+        });
+    }
+</script>
 {% endblock %}

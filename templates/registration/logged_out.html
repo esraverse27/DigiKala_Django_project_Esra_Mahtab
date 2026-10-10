@@ -1,8 +1,10 @@
 {% extends 'base.html' %}
-{% block title %}دیجی کالا|صفحه خروج{% endblock %}
+{% block title %}خروج از حساب | خانومی{% endblock %}
 
 {% block content %}
-<h2>از حساب خارج شدید</h2>
-<p>ممنون که از فروشگاه ما دیدن کردید</p>
-<a href="{% url 'login' %}" class="btn">ورود مجدد</a>
+<section class="auth-page" dir="rtl">
+    <h1>از حساب خارج شدی</h1>
+    <p>برای استفاده‌ی دوباره از حساب، وارد شو.</p>
+    <a href="{% url 'login' %}" class="btn">ورود دوباره</a>
+</section>
 {% endblock %}

@@ -1,17 +1,40 @@
 {% extends 'base.html' %}
-{% block title %}Stores | DijiKala{% endblock %}
+{% load static %}
+{% block title %}فروشگاه‌ها | خانومی{% endblock %}
 
 {% block content %}
-<h2>🏪 All Stores</h2>
-<div class="card-grid">
-    {% for store in stores %}
-        <div class="card">
-            <h3>{{ store.name }}</h3>
-            <p>{{ store.description|truncatewords:15 }}</p>
-            <a href="{% url 'store_detail' store.id %}" class="btn">Visit Store</a>
+<section class="stores-page" dir="rtl">
+    <header class="stores-hero">
+        <span class="stores-hero-mark" aria-hidden="true"><img src="{% static 'images/khanoomi-logo.svg' %}" alt=""></span>
+        <div>
+            <p class="stores-eyebrow">خرید از فروشگاه‌های خانومی</p>
+            <h1>فروشگاه‌هایی برای انتخابی دلنشین</h1>
+            <p class="stores-intro">فروشگاه موردعلاقه‌ات را پیدا کن و محصولاتش را ببین.</p>
         </div>
-    {% empty %}
-        <p>No stores available.</p>
-    {% endfor %}
-</div>
+        <span class="stores-count">{{ stores|length }} فروشگاه</span>
+    </header>
+
+    <div class="stores-grid">
+        {% for store in stores %}
+            <article class="store-card">
+                <div class="store-card-top">
+                    <span class="store-card-mark" aria-hidden="true"><img src="{% static 'images/store-bag-icon.svg' %}" alt=""></span>
+                    <span class="store-card-tag">فروشگاه خانومی</span>
+                </div>
+                <h2>{{ store.name }}</h2>
+                <p>{{ store.description|truncatewords:22 }}</p>
+                <a href="{% url 'store_detail' store.id %}" class="store-card-link">
+                    دیدن محصولات <span aria-hidden="true">←</span>
+                </a>
+            </article>
+        {% empty %}
+            <div class="stores-empty">
+                <span class="stores-empty-mark" aria-hidden="true"><img src="{% static 'images/khanoomi-logo.svg' %}" alt=""></span>
+                <h2>هنوز فروشگاهی ثبت نشده</h2>
+                <p>به‌زودی فروشگاه‌های خانومی اینجا نمایش داده می‌شوند.</p>
+                <a href="{% url 'home' %}" class="stores-empty-link">بازگشت به صفحه اصلی</a>
+            </div>
+        {% endfor %}
+    </div>
+</section>
 {% endblock %}

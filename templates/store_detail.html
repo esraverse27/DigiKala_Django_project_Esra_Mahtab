@@ -1,39 +1,54 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}{{ store.name }} | DijiKala{% endblock %}
+{% block title %}{{ store.name }} | خانومی{% endblock %}
 
 {% block content %}
-<div class="store-header">
-    <h2>{{ store.name }}</h2>
-    <p>{{ store.description }}</p>
-
-    {% if user == store.owner.user %}
-        <a href="{% url 'add_product' store.id %}" class="btn">+ Add Product</a>
-    {% endif %}
-</div>
-
-<hr>
-
-<div class="card-grid">
-    {% for product in products %}
-        <div class="card">
-            {% if product.image %}
-                <img src="{{ product.image.url }}" alt="{{ product.name }}">
-            {% else %}
-                <img src="{% static 'images/default_product.jpg' %}" alt="No image">
-            {% endif %}
-            <h3>{{ product.name }}</h3>
-            <p>{{ product.description|truncatewords:12 }}</p>
-            <p><strong>${{ product.price }}</strong></p>
-
-            {% if user.is_authenticated %}
-                <a href="{% url 'add_to_cart' product.id %}" class="btn">Add to Cart</a>
-            {% else %}
-                <p><a href="{% url 'login' %}">Login to Buy</a></p>
-            {% endif %}
+<section class="store-detail-page" dir="rtl">
+    <header class="store-detail-hero">
+        <div class="store-detail-brand" aria-hidden="true"><img src="{% static 'images/store-bag-icon.svg' %}" alt=""></div>
+        <div class="store-detail-copy">
+            <p class="store-detail-eyebrow">فروشگاه خانومی</p>
+            <h1>{{ store.name }}</h1>
+            <p class="store-detail-description">{{ store.description }}</p>
         </div>
-    {% empty %}
-        <p>No products in this store yet.</p>
-    {% endfor %}
-</div>
+        <div class="store-detail-side">
+            <span class="store-detail-count">{{ products|length }} محصول</span>
+            {% if is_owner %}<a href="{% url 'seller_panel' %}" class="store-manage-link">مدیریت فروشگاه</a>{% endif %}
+        </div>
+    </header>
+
+    <div class="store-detail-section-heading">
+        <div><p>محصولات منتخب</p><h2>محصولات این فروشگاه</h2></div>
+        <a href="{% url 'stores' %}">بازگشت به فروشگاه‌ها <span aria-hidden="true">←</span></a>
+    </div>
+
+    <div class="store-products-grid">
+        {% for product in products %}
+            <article class="store-product-card">
+                <div class="store-product-image-wrap">
+                    {% if product.image %}<img src="{{ product.image.url }}" alt="{{ product.name }}" class="store-product-image">
+                    {% else %}<div class="store-product-placeholder">تصویری برای این محصول ثبت نشده</div>{% endif %}
+                </div>
+                <div class="store-product-info">
+                    <div class="store-product-title-row"><h3>{{ product.name }}</h3><span class="store-product-stock{% if not product.stock %} is-soldout{% endif %}">{% if product.stock %}موجود{% else %}ناموجود{% endif %}</span></div>
+                    <span class="product-category-badge">{{ product.get_category_display }}</span>
+                    <p class="store-product-price">{{ product.price|floatformat:"-2" }} <span>تومان</span></p>
+                    <p class="store-product-quantity">موجودی: {{ product.stock }} عدد</p>
+                    {% if is_customer %}
+                        {% if product.stock > 0 %}
+                            <form method="post" action="{% url 'add_to_cart' product.id %}">
+                                {% csrf_token %}
+                                <button type="submit" class="store-product-buy">افزودن به سبد خرید</button>
+                            </form>
+                        {% else %}<span class="store-product-soldout">فعلاً موجود نیست</span>{% endif %}
+                    {% elif not user.is_authenticated %}
+                        <a class="store-product-buy" href="{% url 'login' %}">برای خرید وارد شو</a>
+                    {% endif %}
+                </div>
+            </article>
+        {% empty %}
+            <div class="store-products-empty"><span aria-hidden="true"><img src="{% static 'images/khanoomi-logo.svg' %}" alt=""></span><h3>هنوز محصولی در این فروشگاه ثبت نشده</h3><p>بعداً دوباره سر بزن؛ محصولات این فروشگاه اینجا نمایش داده می‌شوند.</p></div>
+        {% endfor %}
+    </div>
+</section>
 {% endblock %}

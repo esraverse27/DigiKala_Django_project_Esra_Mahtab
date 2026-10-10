@@ -1,37 +1,70 @@
 {% extends 'base.html' %}
-{% block title %}Cart | DijiKala{% endblock %}
+{% block title %}سبد خرید | خانومی{% endblock %}
 
 {% block content %}
-<h2>🛒 Your Cart</h2>
+<div class="cart-page" dir="rtl">
+    <header class="cart-heading">
+        <div>
+            <p class="section-eyebrow">خریدهای شما</p>
+            <h1>سبد خرید</h1>
+            <p>تعداد کالاها را تغییر بده و پیش از ثبت سفارش، جمع خریدت را ببین.</p>
+        </div>
+        <a class="cart-continue-link" href="{% url 'stores' %}">ادامه‌ی خرید ←</a>
+    </header>
 
-{% if cart_items %}
-    <table class="cart-table">
-        <thead>
-            <tr>
-                <th>Product</th>
-                <th>Store</th>
-                <th>Price</th>
-                <th>Quantity</th>
-                <th>Remove</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for item in cart_items %}
-                <tr>
-                    <td>{{ item.product.name }}</td>
-                    <td>{{ item.product.store.name }}</td>
-                    <td>${{ item.product.price }}</td>
-                    <td>{{ item.quantity }}</td>
-                    <td><a href="{% url 'remove_from_cart' item.id %}">❌</a></td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    {% if cart_items %}
+        <div class="cart-table-wrap">
+            <table class="cart-table">
+                <thead>
+                    <tr>
+                        <th>محصول</th>
+                        <th>فروشگاه</th>
+                        <th>قیمت واحد</th>
+                        <th>تعداد</th>
+                        <th>جمع ردیف</th>
+                        <th>حذف</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in cart_items %}
+                        <tr>
+                            <td class="cart-product-name">{{ item.product.name }}</td>
+                            <td>{{ item.product.store.name }}</td>
+                            <td>{{ item.product.price|floatformat:"-2" }} تومان</td>
+                            <td>
+                                <form class="cart-quantity-form" method="post" action="{% url 'update_cart_item' item.id %}">
+                                    {% csrf_token %}
+                                    <input type="number" name="quantity" min="1" max="999" value="{{ item.quantity }}" aria-label="تعداد {{ item.product.name }}">
+                                    <button type="submit" class="cart-update-button">ثبت</button>
+                                </form>
+                            </td>
+                            <td>{{ item.line_total|floatformat:"-2" }} تومان</td>
+                            <td>
+                                <form method="post" action="{% url 'remove_from_cart' item.id %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="delete-cart-item">حذف</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
 
-    <p><strong>Total:</strong> ${{ total }}</p>
-    <a href="{% url 'checkout' %}" class="btn">✅ Checkout</a>
-
-{% else %}
-    <p>Your cart is empty.</p>
-{% endif %}
+        <section class="cart-summary">
+            <div><span>مجموع سفارش</span><strong>{{ total|floatformat:"-2" }} تومان</strong></div>
+            <form method="post" action="{% url 'checkout' %}">
+                {% csrf_token %}
+                <button type="submit" class="btn">ثبت سفارش آزمایشی</button>
+            </form>
+        </section>
+    {% else %}
+        <section class="cart-empty">
+            <span class="cart-empty-icon" aria-hidden="true">🛒</span>
+            <h2>سبد خریدت هنوز خالی است</h2>
+            <p>از فروشگاه‌ها دیدن کن و محصولی به سبدت اضافه کن.</p>
+            <a class="btn" href="{% url 'stores' %}">رفتن به فروشگاه‌ها</a>
+        </section>
+    {% endif %}
+</div>
 {% endblock %}
