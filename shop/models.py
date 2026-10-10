@@ -26,10 +26,6 @@ class Product(models.Model):
     image = models.ImageField(upload_to='products/')
 
 # Transactions
-class CartItem(models.Model):
-    customer = models.ForeignKey(CustomerProfile, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    quantity = models.PositiveIntegerField(default=1)
 
 class Order(models.Model):
     customer = models.ForeignKey(CustomerProfile, on_delete=models.CASCADE)
