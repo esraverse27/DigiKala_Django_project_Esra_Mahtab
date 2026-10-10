@@ -11,9 +11,9 @@
         <p class="hero-description">محصول موردعلاقه‌ات را در ویترین خانومی پیدا کن.</p>
 
         <form class="product-search" method="get" action="{% url 'home' %}">
-            <label class="visually-hidden" for="product-search">جست‌وجوی محصول یا فروشگاه</label>
+            <label class="visually-hidden" for="product-search">جست‌وجوی محصول</label>
             <input id="product-search" type="search" name="q" value="{{ query }}"
-                   placeholder="نام محصول یا فروشگاه را جست‌وجو کنید">
+                   placeholder="نام محصول را جست‌وجو کنید">
             {% if selected_category %}<input type="hidden" name="category" value="{{ selected_category }}">{% endif %}
             <button type="submit">جست‌وجو</button>
         </form>
@@ -26,7 +26,7 @@
         {% endfor %}
     </nav>
 
-    <section class="home-stores" aria-labelledby="stores-title">
+    {% if not query %}<section class="home-stores" aria-labelledby="stores-title">
         <div class="section-heading">
             <div><p class="section-eyebrow">فهرست فروشگاه‌ها</p><h2 id="stores-title">فروشگاه‌های خانومی</h2></div>
             <a class="store-visit-link" href="{% url 'stores' %}">مشاهده همه فروشگاه‌ها ←</a>
@@ -44,7 +44,7 @@
                 </div>
             {% endfor %}
         </div>
-    </section>
+    </section>{% endif %}
 
     <section class="products-section" aria-labelledby="products-title">
         <div class="section-heading">

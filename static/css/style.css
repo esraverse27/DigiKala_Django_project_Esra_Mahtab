@@ -691,6 +691,9 @@ body { background: #fff9fc; color: #211a32; }
 .password-toggle[aria-pressed="true"] .password-eye-open { display: none; }
 .password-toggle[aria-pressed="true"] .password-eye-closed { display: block; }
 .site-messages { background: #fff0f5; color: #9d174d; }
+.site-messages .success { margin: 0; padding: 10px 12px; border-radius: 9px; background: #e9f8ed; color: #176b35; }
+.signup-alert { margin: 0 0 16px; padding: 12px 14px; border-radius: 10px; }
+.signup-alert--error { border: 1px solid #fecaca; background: #fff1f2; color: #b4234d; }
 .footer { border-color: #fce7f3; background: #fff5f8; color: #706781; }
 
 /* Store directory */
@@ -778,7 +781,8 @@ body { background: #fff9fc; color: #211a32; }
 .store-products-empty p { color: #706781; }
 .payment-page { width: 100%; max-width: 1080px; margin: 0 auto; }
 .payment-hero { display: flex; align-items: center; gap: 18px; margin: 10px 0 28px; padding: 28px 32px; border: 1px solid #fce7f3; border-radius: 22px; background: linear-gradient(115deg, #be185d, #ec4899 65%, #f9a8d4); color: #fff; box-shadow: 0 14px 30px rgba(219,39,119,.16); }
-.payment-hero-icon { display: grid; width: 58px; height: 58px; flex: 0 0 58px; place-items: center; border: 1px solid rgba(255,255,255,.35); border-radius: 18px; background: rgba(255,255,255,.16); font-size: 1.7rem; font-weight: 800; }
+.payment-hero-icon { display: grid; width: 58px; height: 58px; flex: 0 0 58px; place-items: center; border: 1px solid rgba(255,255,255,.35); border-radius: 18px; background: rgba(255,255,255,.16); }
+.payment-hero-icon svg { width: 29px; height: 29px; }
 .payment-eyebrow { margin-bottom: 4px; color: #fce7f3; font-size: .86rem; font-weight: 700; }
 .payment-hero h1 { margin-bottom: 5px; color: #fff; font-size: clamp(1.55rem, 3vw, 2.1rem); }
 .payment-hero p:last-child { color: #f4efff; line-height: 1.8; }
