@@ -22,6 +22,7 @@
                 {% if user.is_authenticated %}
                     {% if user.is_superuser %}
                         <a class="nav-manager{% if request.resolver_match.url_name == 'manager_panel' %} is-current{% endif %}" href="{% url 'manager_panel' %}">مدیریت سراسری</a>
+                        <a class="nav-manager nav-django-admin" href="{% url 'admin:index' %}">پنل مدیریت Django</a>
                         <span class="nav-user"><span class="nav-user-role">مدیر</span>{{ user.phone }}</span>
                     {% elif user.sellerprofile %}
                         <a class="nav-manager{% if request.resolver_match.url_name == 'seller_panel' %} is-current{% endif %}" href="{% url 'seller_panel' %}">پنل فروشنده</a>

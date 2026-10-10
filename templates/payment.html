@@ -4,7 +4,9 @@
 {% block content %}
 <section class="payment-page" dir="rtl">
     <header class="payment-hero">
-        <span class="payment-hero-icon" aria-hidden="true">ت</span>
+        <span class="payment-hero-icon" aria-hidden="true">
+            <svg viewBox="0 0 512 512" focusable="false"><path fill="currentColor" d="M461.2 128H80a16 16 0 0 1 0-32h334.4c8.8 0 16-7.2 16-16s-7.2-16-16-16H80C35.8 64 0 99.8 0 144v288c0 26.5 21.5 48 48 48h400c35.3 0 64-28.7 64-64V192c0-35.3-22.7-64-50.8-64ZM416 352a32 32 0 1 1 0-64 32 32 0 0 1 0 64Z"/></svg>
+        </span>
         <div>
             <p class="payment-eyebrow">حساب مشتری</p>
             <h1>افزایش موجودی</h1>
@@ -24,7 +26,7 @@
             {% csrf_token %}
             <div class="payment-form-heading"><span>۱</span><div><h2>مبلغ شارژ</h2><p>مبلغ را به تومان وارد کن.</p></div></div>
             <label for="amount">مبلغ (تومان)</label>
-            <div class="payment-input-wrap"><input type="number" name="amount" id="amount" min="1" step="1" placeholder="مثلاً ۱۰۰٬۰۰۰" required><span>تومان</span></div>
+            <div class="payment-input-wrap"><input type="number" name="amount" id="amount" min="1" max="99999999" step="1" placeholder="مثلاً ۱۰۰٬۰۰۰" required><span>تومان</span></div>
             <button type="submit" class="btn payment-submit">افزایش موجودی آزمایشی</button>
             <p class="payment-demo-note"><span aria-hidden="true">ⓘ</span> این پرداخت آزمایشی است و تراکنش بانکی واقعی انجام نمی‌دهد.</p>
         </form>

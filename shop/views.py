@@ -5,7 +5,7 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.db import transaction
-from django.db.models import Prefetch, Q
+from django.db.models import Prefetch
 from django.shortcuts import get_object_or_404, redirect, render
 
 from .forms import AdminProductForm, AdminStoreForm, ProductForm, SignupForm, StoreForm, UserLoginForm
@@ -94,7 +94,7 @@ def home(request):
     if selected_category:
         products = products.filter(category=selected_category)
     if query:
-        products = products.filter(Q(name__icontains=query) | Q(store__name__icontains=query))
+        products = products.filter(name__icontains=query)
     products_by_store = Prefetch("product_set", queryset=products, to_attr="visible_products")
     store_groups = [
         {"store": store, "products": store.visible_products}
@@ -103,8 +103,6 @@ def home(request):
     ]
     is_customer = request.user.is_authenticated and CustomerProfile.objects.filter(user=request.user).exists()
     listed_stores = Store.objects.order_by("name")
-    if query:
-        listed_stores = listed_stores.filter(name__icontains=query)
     if selected_category:
         listed_stores = listed_stores.filter(product__category=selected_category).distinct()
     return render(request, "home.html", {
@@ -132,6 +130,7 @@ def signup(request):
                 CustomerProfile.objects.create(user=user, phone=form.cleaned_data["phone"])
                 destination = "customer_panel"
         login(request, user)
+        messages.success(request, "ثبت‌نام با موفقیت انجام شد.")
         return redirect(destination)
     return render(request, "registration/signup.html", {"form": form})
 
@@ -377,8 +376,10 @@ def payment(request):
             amount = Decimal(request.POST.get("amount", ""))
         except (InvalidOperation, TypeError):
             amount = Decimal("0")
-        if not amount.is_finite() or amount <= 0 or amount >= Decimal("100000000"):
+        if not amount.is_finite() or amount <= 0:
             messages.error(request, "مبلغ باید بزرگ‌تر از صفر باشد.")
+        elif amount >= Decimal("100000000"):
+            messages.error(request, "مبلغ واردشده بیشتر از سقف مجاز ۹۹٬۹۹۹٬۹۹۹ تومان است.")
         else:
             customer.balance += amount
             customer.save(update_fields=["balance"])
