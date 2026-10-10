@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 
 from .models import Product, Store
 
@@ -72,8 +73,25 @@ class SignupForm(UserCreationForm):
         fields = ("username",)
         labels = {"username": "نام کاربری"}
 
+    def clean_username(self):
+        username = self.cleaned_data["username"]
+        if User.objects.filter(username__iexact=username).exists():
+            raise ValidationError("این نام کاربری قبلاً ثبت‌نام شده است.")
+        return username
+
+    def clean_password2(self):
+        password1 = self.cleaned_data.get("password1")
+        password2 = self.cleaned_data.get("password2")
+        if password1 and password2:
+            if password1 != password2:
+                raise ValidationError("رمز عبور و تکرار آن یکسان نیستند.")
+            if len(password1) < 8:
+                raise ValidationError("رمز عبور باید حداقل ۸ نویسه داشته باشد.")
+        return password2
+
     def clean(self):
-        cleaned_data = super().clean()
+        # Skip UserCreationForm's default similarity/common/numeric password checks.
+        cleaned_data = forms.ModelForm.clean(self)
         if cleaned_data.get("role") == "customer" and not cleaned_data.get("phone"):
             self.add_error("phone", "برای حساب مشتری واردکردن شماره تماس لازم است.")
         return cleaned_data
