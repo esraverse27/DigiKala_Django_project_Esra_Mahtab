@@ -4,8 +4,8 @@ from decimal import Decimal
 from .models import *
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from accounts.permissions import _require_customer
 
-from accounts.views import _require_customer
 
 @login_required
 def add_to_cart(request, product_id):
