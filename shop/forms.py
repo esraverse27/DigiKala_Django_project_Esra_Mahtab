@@ -1,26 +1,6 @@
 from django import forms
-from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
-from django.contrib.auth import get_user_model
-from django.core.exceptions import ValidationError
 
 from .models import Product, Store
-
-
-class UserLoginForm(AuthenticationForm):
-    error_messages = {
-        "invalid_login": "نام کاربری یا رمز عبور نادرست است.",
-        "inactive": "این حساب غیرفعال است.",
-    }
-    username = forms.CharField(
-        label="شماره تلفن",
-        max_length=11,
-        widget=forms.TextInput(attrs={"autocomplete": "tel", "autofocus": True}),
-    )
-    password = forms.CharField(
-        label="رمز عبور",
-        strip=False,
-        widget=forms.PasswordInput(attrs={"autocomplete": "current-password"}),
-    )
 
 
 class StoreForm(forms.ModelForm):
@@ -59,42 +39,6 @@ class AdminStoreForm(StoreForm):
         super().__init__(*args, **kwargs)
         from .models import SellerProfile
         self.fields["seller"].queryset = SellerProfile.objects.exclude(store__isnull=False).select_related("user").order_by("user__phone")
-
-
-class SignupForm(UserCreationForm):
-    role = forms.ChoiceField(
-        label="نوع حساب",
-        choices=(("customer", "مشتری"), ("seller", "فروشنده")),
-    )
-    phone = forms.CharField(label="شماره تماس", max_length=11, required=True)
-    first_name = forms.CharField(label="نام", max_length=100, required=False)
-    last_name = forms.CharField(label="نام خانوادگی", max_length=100, required=False)
-
-    class Meta(UserCreationForm.Meta):
-        model = get_user_model()
-        fields = ("first_name", "last_name", "phone")
-        labels = {"phone": "شماره تماس", "first_name": "نام", "last_name": "نام خانوادگی"}
-
-    def clean_phone(self):
-        phone = self.cleaned_data["phone"]
-        if get_user_model().objects.filter(phone=phone).exists():
-            raise ValidationError("این شماره تلفن قبلاً ثبت‌نام شده است.")
-        return phone
-
-    def clean_password2(self):
-        password1 = self.cleaned_data.get("password1")
-        password2 = self.cleaned_data.get("password2")
-        if password1 and password2:
-            if password1 != password2:
-                raise ValidationError("رمز عبور و تکرار آن یکسان نیستند.")
-            if len(password1) < 8:
-                raise ValidationError("رمز عبور باید حداقل ۸ نویسه داشته باشد.")
-        return password2
-
-    def clean(self):
-        # Skip UserCreationForm's default similarity/common/numeric password checks.
-        cleaned_data = forms.ModelForm.clean(self)
-        return cleaned_data
 
 
 class ProductForm(forms.ModelForm):

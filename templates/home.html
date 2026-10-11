@@ -13,7 +13,11 @@
         <form class="product-search" method="get" action="{% url 'home' %}">
             <label class="visually-hidden" for="product-search">جست‌وجوی محصول</label>
             <input id="product-search" type="search" name="q" value="{{ query }}"
+<<<<<<< HEAD
                    placeholder="نام محصول را جست‌وجو کنید">
+=======
+                   placeholder="نام محصول یا فروشگاه را جست‌وجو کنید">
+>>>>>>> Esra
             {% if selected_category %}<input type="hidden" name="category" value="{{ selected_category }}">{% endif %}
             <button type="submit">جست‌وجو</button>
         </form>
@@ -26,7 +30,11 @@
         {% endfor %}
     </nav>
 
+<<<<<<< HEAD
     {% if not query %}<section class="home-stores" aria-labelledby="stores-title">
+=======
+    <section class="home-stores" aria-labelledby="stores-title">
+>>>>>>> Esra
         <div class="section-heading">
             <div><p class="section-eyebrow">فهرست فروشگاه‌ها</p><h2 id="stores-title">فروشگاه‌های خانومی</h2></div>
             <a class="store-visit-link" href="{% url 'stores' %}">مشاهده همه فروشگاه‌ها ←</a>
@@ -44,7 +52,11 @@
                 </div>
             {% endfor %}
         </div>
+<<<<<<< HEAD
     </section>{% endif %}
+=======
+    </section>
+>>>>>>> Esra
 
     <section class="products-section" aria-labelledby="products-title">
         <div class="section-heading">

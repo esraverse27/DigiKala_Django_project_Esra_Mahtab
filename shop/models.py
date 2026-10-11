@@ -38,18 +38,3 @@ class Product(models.Model):
     image = models.ImageField(upload_to='products/')
     stock = models.PositiveIntegerField(default=0, verbose_name="موجودی")
 
-# Transactions
-class CartItem(models.Model):
-    customer = models.ForeignKey(CustomerProfile, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    quantity = models.PositiveIntegerField(default=1)
-
-class Order(models.Model):
-    customer = models.ForeignKey(CustomerProfile, on_delete=models.CASCADE)
-    created_at = models.DateTimeField(auto_now_add=True)
-    is_paid = models.BooleanField(default=False)
-
-class OrderItem(models.Model):
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    quantity = models.PositiveIntegerField()

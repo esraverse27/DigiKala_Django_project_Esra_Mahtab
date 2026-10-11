@@ -1,5 +1,7 @@
 from django.contrib import admin
-from .models import CartItem, CustomerProfile, Order, OrderItem, Product, SellerProfile, Store
+from .models import SellerProfile, CustomerProfile, Store, Product
+from cart.models import CartItem
+from order.models import Order, OrderItem
 
 
 class SuperuserOnlyAdmin(admin.ModelAdmin):
