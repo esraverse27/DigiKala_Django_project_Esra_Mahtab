@@ -12,12 +12,12 @@ then we register model datas to let superusers manage theme at site.
 
 ### models
 - here we have a class(model) of users wich inheritates AbstractUser
-- we have a class for managing users wich inheritates UserManager. we overwrited functions of creating user and superuser to use phone as username.
+- we have a class for managing users wich inheritates UserManager. we overwrode functions of creating user and superuser to use phone as username.
 
 ### views and forms
-_ in forms.py we created forms of login and registration. we imported theme in views and sent theme as a dictionary to the templates of login and registration. at `form = registration_form` we define the variables and in `render(,,{'form',form})` string 'form' in html stands for the form we have defined and its value is our form. it lets us make intraction between front and backend.
+- in forms.py we created forms of login and registration. we imported theme in views and sent theme as a dictionary to the templates of login and registration. at `form = registration_form` we define the variables and in `render(,,{'form',form})` string 'form' in html stands for the form we have defined and its value is our form. it lets us make intraction between front and backend.
 
-- in views functions basically get request as input, wich are sent by urls from client to server. they contain a lot of data about the request they send. and the type af it is somtimes POST and sometimes GET.
+- in views functions basically get request as input, wich are sent by urls from client to server. they contain a lot of data about the request they send. and the type of it is somtimes POST and sometimes GET.
 
 - in login and signin methods, we get two types of functions according to the type of reqest. if the request is containing secret data like password and actually when the user registered valid data and they are being sent to the server, the method is post, because we don't want the data to be shown in url. in this case, we save his datas and ridirect him to the home page. but if the method is get, we show him the form page. this should happen both when he clicks on it for the first time, and when reloading after entering invalid input.
  
@@ -80,7 +80,7 @@ in query functions,  __ sometimes means that we are getting an attribute of obje
 *how does it work?
 - it's for managing the store in two cases, for seller and the manager
 - if method of request is post, for each kind of action we define the metod. we have save_store and add_product in cases that admin_panel given in method is true or false. 
-- then we returened it in manager_panel and seller_panel. in manager panel, admin_pannel is true and in seller_panel it's false.
+- then we returened it in manager_panel and seller_panel methods. in manager panel, admin_pannel is true and in seller_panel it's false.
 - it validates needed datas and renders 'manager_panel.html'
 
 ### manager_edit_product and manager_delete_product
@@ -93,7 +93,8 @@ in query functions,  __ sometimes means that we are getting an attribute of obje
  they use functions defined in accounts to authenticate user and his role.
  ```def _require_seller(request):
     if not SellerProfile.objects.filter(user=request.user).exists():
-        raise PermissionDenied``` 
+        raise PermissionDenied
+``` 
 in accounts.permission we have such functions for authenticating user.
 
 
@@ -103,7 +104,7 @@ in accounts.permission we have such functions for authenticating user.
 - we have cart item that gets a product and a quantity for it
 it has a foreign key to cart and each cart item is related to a special cart
 
-- we have cart wich saves the items of each user, and each of theme is related to one user. so it,s one to one field.
+- we have cart wich saves the items of each user, and each of theme is related to one user. so it uses one to one field.
 
 ### views and templates
 
